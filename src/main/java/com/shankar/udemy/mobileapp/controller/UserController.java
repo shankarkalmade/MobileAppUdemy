@@ -1,7 +1,9 @@
 package com.shankar.udemy.mobileapp.controller;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,7 @@ public class UserController {
 			MediaType.APPLICATION_XML_VALUE, 
 			MediaType.APPLICATION_JSON_VALUE }
 	)
-	public User getUsersbyID(@PathVariable String userId ) {
+	public ResponseEntity<User> getUsersbyID(@PathVariable String userId ) {
 		
 		User resUser= new User();
 		resUser.setEmail("shankar@gmail.com");
@@ -30,7 +32,7 @@ public class UserController {
 		resUser.setLastName("K");
 		resUser.setUserId("shankar");
 		
-		return resUser;
+		return new ResponseEntity<User>(resUser,HttpStatus.OK);
 	} 
 //	
 //	@GetMapping("/users")
