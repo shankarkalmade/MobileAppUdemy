@@ -1,5 +1,8 @@
 package com.shankar.udemy.mobileapp.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class User {
 	
 	private String firstName;

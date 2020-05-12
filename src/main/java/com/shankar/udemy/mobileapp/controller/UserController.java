@@ -1,5 +1,7 @@
 package com.shankar.udemy.mobileapp.controller;
 
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,10 @@ import com.shankar.udemy.mobileapp.model.User;
 public class UserController {
 
 	
-	@GetMapping("/users/{userId}")
+	@GetMapping(path = "/users/{userId}", produces = {
+			MediaType.APPLICATION_XML_VALUE, 
+			MediaType.APPLICATION_JSON_VALUE }
+	)
 	public User getUsersbyID(@PathVariable String userId ) {
 		
 		User resUser= new User();
