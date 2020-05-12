@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shankar.udemy.mobileapp.model.User;
+import com.shankar.udemy.mobileapp.model.request.UserRequest;
 
 @RestController
 
@@ -51,9 +53,23 @@ public class UserController {
 		return "List of sample "+limit+" Users for page:  "+ page +" sort :"+ sortRequired;
 	}
 	
-	@PostMapping("/users")
-	public String createUsers() {
-		return "Create User operration";
+	@PostMapping(path = "/users", 
+			produces = {
+					MediaType.APPLICATION_XML_VALUE, 
+					MediaType.APPLICATION_JSON_VALUE },
+			consumes  = {
+					MediaType.APPLICATION_XML_VALUE, 
+					MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<User> createUsers(@RequestBody UserRequest userRequest) {
+		
+		User resUser= new User();
+		resUser.setEmail(userRequest.getEmail());
+		resUser.setFirstName(userRequest.getFirstName());
+		resUser.setLastName(userRequest.getLastName());
+		
+		return new ResponseEntity<User>(resUser,HttpStatus.OK);
+		
+
 	}
 	
 	@PutMapping("/users")
