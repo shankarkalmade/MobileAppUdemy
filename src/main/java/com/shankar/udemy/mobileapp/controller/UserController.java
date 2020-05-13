@@ -36,9 +36,6 @@ public class UserController {
 	)
 	public ResponseEntity<User> getUsersbyID(@PathVariable String userId ) {
 		
-		
-
-		
 		if(userMap.containsKey(userId)) 
 			return new ResponseEntity<User>(userMap.get(userId),HttpStatus.OK);
 		else 
@@ -94,6 +91,8 @@ public class UserController {
 	public ResponseEntity<User> updateUsers(@PathVariable String userId,@Valid @RequestBody UpdateUserRequest userRequest) {
 		
 		User userDetails = userMap.get(userId);
+		System.out.println(userDetails.getFirstName());
+		
 		if (userDetails!=null) {
 			userDetails.setFirstName(userRequest.getFirstName());
 			userDetails.setLastName(userRequest.getLastName());
