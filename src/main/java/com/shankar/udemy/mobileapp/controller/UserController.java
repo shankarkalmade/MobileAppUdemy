@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shankar.udemy.mobileapp.exceptions.UserServiceException;
 import com.shankar.udemy.mobileapp.model.User;
 import com.shankar.udemy.mobileapp.model.request.UpdateUserRequest;
 import com.shankar.udemy.mobileapp.model.request.UserRequest;
@@ -27,8 +28,8 @@ import com.shankar.udemy.mobileapp.model.request.UserRequest;
 
 public class UserController {
 
-	Map<String, User> userMap;
-	
+	Map<String, User> userMap = new HashMap<String, User>();
+		
 	
 	@GetMapping(path = "/users/{userId}", produces = {
 			MediaType.APPLICATION_XML_VALUE, 
@@ -69,8 +70,7 @@ public class UserController {
 		resUser.setLastName(userRequest.getLastName());
 		resUser.setUserId(UUID.randomUUID().toString());
 	
-		if(userMap==null)
-				userMap = new HashMap<String, User>();
+		
 		
 		userMap.put(resUser.getUserId(), resUser);
 		System.out.println("User Map contains : "+ userMap.size());
@@ -91,14 +91,14 @@ public class UserController {
 	public ResponseEntity<User> updateUsers(@PathVariable String userId,@Valid @RequestBody UpdateUserRequest userRequest) {
 		
 		User userDetails = userMap.get(userId);
-		System.out.println(userDetails.getFirstName());
 		
 		if (userDetails!=null) {
 			userDetails.setFirstName(userRequest.getFirstName());
 			userDetails.setLastName(userRequest.getLastName());
 			
 		} else {
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+			throw new UserServiceException("User Service Exception : trying to update unvaialable user");
+			//return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 		}
 		
 		userMap.put(userId, userDetails);
