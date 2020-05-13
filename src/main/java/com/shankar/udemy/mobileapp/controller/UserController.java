@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,14 @@ import com.shankar.udemy.mobileapp.exceptions.UserServiceException;
 import com.shankar.udemy.mobileapp.model.User;
 import com.shankar.udemy.mobileapp.model.request.UpdateUserRequest;
 import com.shankar.udemy.mobileapp.model.request.UserRequest;
+import com.shankar.udemy.mobileapp.service.user.impl.UserServiceImpl;
 
 @RestController
 
 public class UserController {
 
-	Map<String, User> userMap = new HashMap<String, User>();
+	@Autowired
+	UserServiceImpl userService;
 		
 	
 	@GetMapping(path = "/users/{userId}", produces = {
@@ -37,8 +41,10 @@ public class UserController {
 	)
 	public ResponseEntity<User> getUsersbyID(@PathVariable String userId ) {
 		
-		if(userMap.containsKey(userId)) 
-			return new ResponseEntity<User>(userMap.get(userId),HttpStatus.OK);
+		User resUser = userService.getUserbyId(userId);
+		
+		if(resUser != null) 
+			return new ResponseEntity<User>(resUser,HttpStatus.OK);
 		else 
 			return 	new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 	} 
@@ -64,16 +70,7 @@ public class UserController {
 					MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<User> createUsers(@Valid @RequestBody UserRequest userRequest) {
 		
-		User resUser= new User();
-		resUser.setEmail(userRequest.getEmail());
-		resUser.setFirstName(userRequest.getFirstName());
-		resUser.setLastName(userRequest.getLastName());
-		resUser.setUserId(UUID.randomUUID().toString());
-	
-		
-		
-		userMap.put(resUser.getUserId(), resUser);
-		System.out.println("User Map contains : "+ userMap.size());
+		User resUser = userService.createUser(userRequest);		
 		
 		return new ResponseEntity<User>(resUser,HttpStatus.OK);
 		
@@ -90,26 +87,16 @@ public class UserController {
 	
 	public ResponseEntity<User> updateUsers(@PathVariable String userId,@Valid @RequestBody UpdateUserRequest userRequest) {
 		
-		User userDetails = userMap.get(userId);
+		User resUser = userService.updateUserbyId(userId, userRequest);
 		
-		if (userDetails!=null) {
-			userDetails.setFirstName(userRequest.getFirstName());
-			userDetails.setLastName(userRequest.getLastName());
-			
-		} else {
-			throw new UserServiceException("User Service Exception : trying to update unvaialable user");
-			//return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-		}
-		
-		userMap.put(userId, userDetails);
-		
-		return new ResponseEntity<User>(userMap.get(userId),HttpStatus.OK);
+		return new ResponseEntity<User>(resUser,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/users/{userId}")
 	public ResponseEntity<Void> deleteUsers(@PathVariable String userId) {
 		
-		userMap.remove(userId);
+		boolean status = userService.deleteUser(userId);
+		
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 }
