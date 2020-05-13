@@ -29,5 +29,17 @@ public class ExceptiomHandler extends ResponseEntityExceptionHandler {
 				new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 		
-	
+	@ExceptionHandler(value = {NullPointerException.class})
+	public ResponseEntity<Object> handleNullPointerException (Exception ex, WebRequest req) {
+		
+		String errMessage = "Null pointer exception while serving your request";
+		//if(errMessage==null)errMessage=ex.toString();
+		
+		
+		ErrorMessage err = new ErrorMessage(new Date(), errMessage);
+		
+		return new ResponseEntity<Object> (err, 
+				new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+		
 }
