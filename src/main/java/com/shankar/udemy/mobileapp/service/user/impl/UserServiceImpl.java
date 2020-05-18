@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.swing.text.Utilities;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shankar.udemy.mobileapp.exceptions.UserServiceException;
@@ -11,11 +14,23 @@ import com.shankar.udemy.mobileapp.model.User;
 import com.shankar.udemy.mobileapp.model.request.UpdateUserRequest;
 import com.shankar.udemy.mobileapp.model.request.UserRequest;
 import com.shankar.udemy.mobileapp.service.user.UserService;
+import com.shankar.udemy.mobileapp.utils.CommonUtlity;
 
 @Service
 public class UserServiceImpl implements UserService{
 
+	CommonUtlity utility;
+	
+	@Autowired
+	public UserServiceImpl(CommonUtlity util) {
+		// TODO Auto-generated constructor stub
+		this.utility = util;
+	}
+	
+	
 	Map<String, User> userMap = new HashMap<String, User>();
+	
+	
 	
 	@Override
 	public User createUser(UserRequest userRequest) {
@@ -25,7 +40,7 @@ public class UserServiceImpl implements UserService{
 		resUser.setEmail(userRequest.getEmail());
 		resUser.setFirstName(userRequest.getFirstName());
 		resUser.setLastName(userRequest.getLastName());
-		resUser.setUserId(UUID.randomUUID().toString());
+		resUser.setUserId(utility.createUserId());
 	
 		userMap.put(resUser.getUserId(), resUser);
 		System.out.println("User Map contains : "+ userMap.size());
